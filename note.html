@@ -103,17 +103,44 @@
   </div>
 
   <script>
-    // List of questions for the quiz
-    const quizQuestions = [
-      "What is one small thing that made you smile today?",
-      "If your day was a color, what would it be and why?",
-      "What is something you can do right now to feel more relaxed?",
-      "Describe the most peaceful moment of your day.",
-      "What are you looking forward to most this week?",
-      "What song or sound would you use to describe your mood?",
-      "Think about your favorite place. How does it make you feel?",
-      "After you relax, what feeling do you want to keep with you?"
-    ];
+    const moodQuestions = {
+      'Happy': [
+        "What is one small thing that made you smile today?",
+        "Describe a moment of genuine happiness you experienced.",
+        "What are you most grateful for in this moment?",
+        "Recall a funny or joyful memory from today."
+      ],
+      'Sad': [
+        "What is one thing you can do to be kind to yourself right now?",
+        "If your day was a color, what would it be and why?",
+        "What is a small step you can take to feel a little better?",
+        "Write about one positive memory, no matter how small."
+      ],
+      'Angry': [
+        "What's one way you can release this frustration in a healthy way?",
+        "Describe a peaceful place you can imagine to calm yourself.",
+        "What is the root of your anger? Try to write it without judgment.",
+        "Think of a song that helps you feel grounded. What is it?"
+      ],
+      'Calm': [
+        "Describe the most peaceful moment of your day.",
+        "What sensations do you feel in your body right now?",
+        "What are you looking forward to most this week?",
+        "What sound or smell would you use to describe your mood?"
+      ],
+      'Excited': [
+        "What's the best thing about what you're excited about?",
+        "What positive energy do you want to carry into tomorrow?",
+        "Describe your excitement using a metaphor.",
+        "How can you share this good energy with someone else?"
+      ],
+      'Lonely': [
+        "What is something you can do right now to feel more connected?",
+        "Think about your favorite place. How does it make you feel?",
+        "What's one thing you admire about yourself?",
+        "Recall a time you felt deeply connected to someone or something."
+      ]
+    };
 
     // Get the mood and question from the URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -157,11 +184,18 @@
       });
       localStorage.setItem("moodLog", JSON.stringify(log));
 
-      // Pick a random question and redirect to the quiz stage
-      const randomIndex = Math.floor(Math.random() * quizQuestions.length);
-      const selectedQuestion = quizQuestions[randomIndex];
-      const encodedQuestion = encodeURIComponent(selectedQuestion);
-      window.location.href = `note.html?mood=${mood}&question=${encodedQuestion}`;
+      // Pick a random question based on the selected mood
+      const relevantQuestions = moodQuestions[mood] || [];
+      if (relevantQuestions.length > 0) {
+          const randomIndex = Math.floor(Math.random() * relevantQuestions.length);
+          const selectedQuestion = relevantQuestions[randomIndex];
+          const encodedQuestion = encodeURIComponent(selectedQuestion);
+          window.location.href = `note.html?mood=${mood}&question=${encodedQuestion}`;
+      } else {
+          // If no questions are defined for a mood, redirect back
+          alert("Your note has been saved!");
+          window.location.href = "mood.html";
+      }
     }
 
     function saveQuizAnswer() {
