@@ -129,7 +129,44 @@
       background: #2196f3;
     }
 
-    /* --- Media Query for Mobile/Tablet Screens (Max width 768px) --- */
+    /* --- Toggle Button Styling (Hamburger Icon) --- */
+    .menu-toggle {
+      display: none; /* Hidden by default on large screens */
+      background: none;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 1010;
+    }
+
+    .hamburger {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background-color: #334e68;
+      position: relative;
+      transition: background-color 0.3s;
+    }
+
+    .hamburger::before,
+    .hamburger::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background-color: #334e68;
+      transition: transform 0.3s, top 0.3s, bottom 0.3s;
+    }
+
+    .hamburger::before {
+      top: -8px;
+    }
+
+    .hamburger::after {
+      bottom: -8px;
+    }
+
+    /* --- Responsive Media Query for Mobile/Tablet Screens (Max width 768px) --- */
     @media (max-width: 768px) {
       /* GENERAL ADJUSTMENTS */
       .section {
@@ -138,26 +175,62 @@
         border-radius: 15px; /* Slightly smaller border radius */
       }
 
-      /* HEADER & NAVIGATION ADJUSTMENTS */
-      .header-content {
-        flex-direction: column; /* Stack logo and navigation vertically */
-        align-items: center; /* Center items when stacked */
+      /* Show the toggle button on small screens */
+      .menu-toggle {
+        display: block;
       }
 
-      .logo {
-        margin-bottom: 15px; /* Add space between logo and nav */
-        font-size: 1.5em; /* Slightly smaller logo text */
+      /* Reset header for better mobile layout with toggle */
+      .header-content {
+        flex-direction: row; /* Keep logo and toggle on one line */
+        justify-content: space-between; /* Space them out */
+        align-items: center;
+      }
+
+      /* Hide the nav by default on mobile */
+      .nav-wrapper {
+        display: none;
+        position: absolute;
+        top: 60px; /* Position below the header (adjust based on header height) */
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        padding: 10px 0;
+      }
+
+      /* Style for when the menu is open (used by JavaScript) */
+      .nav-wrapper.is-open {
+        display: block;
       }
 
       .main-nav ul {
-        flex-direction: column; /* Stack nav links vertically for better tapping */
-        gap: 10px; /* Reduced gap between links */
-        text-align: center; /* Center the stacked links */
+        flex-direction: column; 
+        gap: 0;
+      }
+      
+      .main-nav li {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .main-nav li:last-child {
+        border-bottom: none;
       }
 
-      .main-nav a {
-        padding: 5px 0; /* Add padding for larger tap targets */
-        font-size: 1em;
+      /* Hamburger to 'X' animation */
+      .menu-toggle[aria-expanded="true"] .hamburger {
+        background-color: transparent;
+      }
+      
+      .menu-toggle[aria-expanded="true"] .hamburger::before {
+        transform: rotate(45deg);
+        top: 0;
+      }
+      
+      .menu-toggle[aria-expanded="true"] .hamburger::after {
+        transform: rotate(-45deg);
+        bottom: 0;
       }
     }
   </style>
@@ -169,15 +242,20 @@
       <div class="logo">
         <a href="index.html">The Whispering Willow</a>
       </div>
-      <nav class="main-nav">
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="nature-gallery.html">Nature Gallery</a></li>
-          <li><a href="book.html">Books</a></li>
-          <li><a href="mood.html">Mood</a></li>
-          <li><a href="#" class="active">Contact</a></li>
-        </ul>
-      </nav>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="main-menu">
+        <span class="hamburger"></span>
+      </button>
+      <div class="nav-wrapper" id="main-menu">
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="nature-gallery.html">Nature Gallery</a></li>
+            <li><a href="book.html">Books</a></li>
+            <li><a href="mood.html">Mood</a></li>
+            <li><a href="#" class="active">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
     </div>
   </header>
 
@@ -205,6 +283,22 @@
       <button type="submit" class="send-btn">Send Request</button>
     </form>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleButton = document.querySelector('.menu-toggle');
+      const navWrapper = document.getElementById('main-menu');
+
+      toggleButton.addEventListener('click', () => {
+        // Check current expanded state for ARIA compliance
+        const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true' || false;
+        
+        // Toggle the 'aria-expanded' attribute and the 'is-open' class
+        toggleButton.setAttribute('aria-expanded', !isExpanded);
+        navWrapper.classList.toggle('is-open');
+      });
+    });
+  </script>
 
 </body>
 </html>
